@@ -1,10 +1,9 @@
 import { create } from "zustand";
 import {
-  DRIVERS,
   HOME_PIN,
   TIERS,
   YOU,
-  hashString,
+  UNASSIGNED,
   inValley,
   milesBetween,
   motionMs,
@@ -16,7 +15,6 @@ import {
   type RiderPersona,
   type RouteInfo,
   type TierId,
-  SEED_HISTORY,
 } from "@/lib/rove/model";
 
 export type RiderPhase = "plan" | "matching" | "pickup" | "riding" | "receipt";
@@ -138,7 +136,7 @@ export const useRove = create<RoveState>((set, get) => ({
   driverPhase: "offline",
   driverJob: null,
   leg: null,
-  history: SEED_HISTORY,
+  history: [],
   home: null,
   work: null,
   saving: null,
@@ -158,7 +156,7 @@ export const useRove = create<RoveState>((set, get) => ({
     if (!inValley(pickup.lat, pickup.lng) || !inValley(dropoff.lat, dropoff.lng)) return;
     const id = crypto.randomUUID();
     const price = quoteFare(route.miles, TIERS[tier]);
-    const driverPersona = DRIVERS[hashString(id) % DRIVERS.length] ?? DRIVERS[0];
+    const driverPersona = UNASSIGNED;
     set({
       riderPhase: "matching",
       freshId: null,
@@ -173,7 +171,7 @@ export const useRove = create<RoveState>((set, get) => ({
         geometry: route.geometry,
         driverPersona,
         approachMin: 4,
-        linked: true,
+        linked: false,
         selfDrive: false,
         ...price,
       },

@@ -14,7 +14,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "Flat fares with no surge. Drivers keep 80% of every ride. 8020Ride collects a flat 20% from the driver. 8020ride.com",
+          "Flat fare quotes for Porterville and the valley. Drivers would keep 80%. This release does not dispatch a car or charge a card.",
       },
       { name: "theme-color", content: "#0c6a64" },
     ],

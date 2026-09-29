@@ -28,11 +28,7 @@ export function DriverPanel() {
   const startDriverTrip = useRove((s) => s.startDriverTrip);
   const completeDriver = useRove((s) => s.completeDriver);
   const finishDriver = useRove((s) => s.finishDriver);
-  const cashOut = useRove((s) => s.cashOut);
   const cashed = useRove((s) => s.cashed);
-  const openRide = useRove((s) =>
-    s.riderPhase === "matching" && s.riderTrip?.linked ? s.riderTrip : null,
-  );
   const [screen, setScreen] = useState<Screen>("dash");
   const [Chart, setChart] = useState<ComponentType<{
     data: { key: string; label: string; kept: number }[];
@@ -75,7 +71,7 @@ export function DriverPanel() {
           <ChevronLeft className="size-5" />
           Back
         </button>
-        <h2 className="font-display text-3xl">Payouts</h2>
+        <h2 className="font-display text-3xl">Trips</h2>
         <TripList />
       </div>
     );
@@ -191,7 +187,7 @@ export function DriverPanel() {
           <IconButton label="Fares" onClick={() => setScreen("rates")}>
             <BadgePercent className="size-5" />
           </IconButton>
-          <IconButton label="Payouts" onClick={() => setScreen("trips")}>
+          <IconButton label="Trips" onClick={() => setScreen("trips")}>
             <Clock className="size-5" />
           </IconButton>
         </div>
@@ -203,33 +199,17 @@ export function DriverPanel() {
             <span className="rove-ping absolute inline-flex size-3 rounded-sm bg-jade opacity-70" />
             <span className="relative size-2.5 rounded-sm bg-jade" />
           </span>
-          <p className="text-sm font-medium">Looking for a rider.</p>
-        </div>
-      ) : null}
-
-      {openRide ? (
-        <div className="rounded-sm bg-mint px-4 py-3 text-jade-deep">
-          <p className="font-medium">Your request is live</p>
-          <p className="text-sm">
-            {openRide.pickup.name} to {openRide.dropoff.name}. Go online to take it.
-          </p>
+          <p className="text-sm font-medium">Online on this device. No requests come in from other phones yet.</p>
         </div>
       ) : null}
 
       <div className="border border-ink bg-paper px-4 py-4">
-        <p className="text-sm text-muted">Available to cash out</p>
+        <p className="text-sm text-muted">Recorded on this device</p>
         <p className="font-display text-5xl leading-none text-jade tabular-nums">{money(balance.available)}</p>
-        <button
-          type="button"
-          onClick={cashOut}
-          disabled={balance.available <= 0}
-          className="press mt-3 h-12 w-full bg-ink text-base font-medium text-paper disabled:opacity-40"
-        >
-          {balance.available > 0 ? `Cash out ${money(balance.available)}` : "Nothing waiting"}
-        </button>
-        {balance.cashed > 0 ? (
-          <p className="mt-2 text-sm text-muted">Paid out {money(balance.cashed)} on this device.</p>
-        ) : null}
+        <p className="mt-2 text-sm text-muted">
+          This is not a bank balance. 8020Ride does not pay out.
+          {balance.cashed > 0 ? ` Earlier figures marked paid on this device: ${money(balance.cashed)}.` : ""}
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-2">

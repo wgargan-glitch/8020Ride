@@ -72,7 +72,6 @@ export function RiderPanel() {
   const finishRider = useRove((s) => s.finishRider);
   const completeRider = useRove((s) => s.completeRider);
   const rateRide = useRove((s) => s.rateRide);
-  const driveThisRide = useRove((s) => s.driveThisRide);
   const setRole = useRove((s) => s.setRole);
   const home = useRove((s) => s.home);
   const work = useRove((s) => s.work);
@@ -216,18 +215,15 @@ export function RiderPanel() {
       <div className="screen-in" aria-live="polite">
         {phase === "matching" ? (
           <div className="space-y-4">
-            <h2 className="font-display text-3xl text-ink">Finding your driver</h2>
+            <h2 className="font-display text-3xl text-ink">Fare locked</h2>
             <p className="text-muted">
-              The fare is locked. A driver nearby can take it, or you can drive it yourself.
+              No driver is assigned. This release does not send a car and does not charge you. The request stays on this device until you cancel it.
             </p>
             <div className="rounded-sm bg-linen px-4 py-4">
               <p className="text-sm text-muted">{TIERS[trip.tier].name}</p>
               <p className="font-display text-4xl tabular-nums">{money(trip.total)}</p>
             </div>
-            {trip.linked ? (
-              <PrimaryButton onClick={driveThisRide}>Drive it</PrimaryButton>
-            ) : null}
-            <SoftButton onClick={cancelRider}>Cancel · no fee</SoftButton>
+            <SoftButton onClick={cancelRider}>Cancel request</SoftButton>
           </div>
         ) : null}
 
@@ -286,7 +282,6 @@ export function RiderPanel() {
             </h2>
             <p className="text-sm text-muted">
               {trip.pickup.name} to {trip.dropoff.name}
-              {trip.selfDrive ? `. You also paid ${money(trip.total)} as the rider.` : " · Visa ··· 4242"}
             </p>
             {fresh ? <FareLines ride={fresh} emphasis="paid" /> : null}
             <div>
@@ -383,13 +378,14 @@ export function RiderPanel() {
         {near ? (
           <p className="text-sm text-muted">That stop is the same as pickup. Choose another place.</p>
         ) : outside ? (
-          <p className="text-sm text-muted">8020Ride drives Porterville and the valley — Visalia, Tulare, Lindsay, Exeter, and the foothills. This pin is outside that area.</p>
+          <p className="text-sm text-muted">8020Ride quotes Porterville and the valley — Visalia, Tulare, Lindsay, Exeter, and the foothills. This pin is outside that area.</p>
         ) : routing || !price || !route ? (
           <p className="text-sm text-muted">Locking a flat fare…</p>
         ) : (
           <>
             <p className="text-sm text-muted">
-              {formatMiles(route.miles)} · about {formatMinutes(route.minutes)} · Visa ··· 4242 · price will not change
+              {formatMiles(route.miles)} · about {formatMinutes(route.minutes)}
+              {route.estimated ? " · straight-line estimate" : ""} · the price will not change
             </p>
             <div className="space-y-2">
               {TIER_ORDER.map((id) => {
@@ -430,7 +426,7 @@ export function RiderPanel() {
         {ready && price ? (
           <div className="sticky bottom-0 mt-auto -mx-4 border-t border-line bg-paper px-4 py-3">
             <PrimaryButton onClick={requestRide}>
-              Request {TIERS[tier].name} · {money(price.total)}
+              Lock {TIERS[tier].name} · {money(price.total)}
             </PrimaryButton>
           </div>
         ) : null}
@@ -443,7 +439,7 @@ export function RiderPanel() {
       <div className="flex items-start justify-between gap-2">
         <div>
           <h2 className="font-display text-3xl">Where to?</h2>
-          <p className="text-sm text-muted">Porterville and the valley. No surge.</p>
+          <p className="text-sm text-muted">Porterville and the valley. A locked price. No car is sent yet.</p>
         </div>
         <div className="flex">
           <IconButton label="How fares work" onClick={() => setScreen("rates")}>

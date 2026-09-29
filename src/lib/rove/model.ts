@@ -59,6 +59,7 @@ export type RouteInfo = {
   miles: number;
   minutes: number;
   geometry: LatLng[];
+  estimated: boolean;
 };
 
 export type DriverPersona = {
@@ -78,7 +79,7 @@ export const YOU: DriverPersona = {
   trips: 0,
   car: "Your car",
   color: "Yours",
-  plate: "ROVE",
+  plate: "8020",
 };
 
 export type RiderPersona = {
@@ -140,12 +141,22 @@ export const HOME_PIN = PLACES[0];
 export const SUGGESTED_IDS = ["college", "hospital", "lake", "visalia", "target", "springville"];
 
 export const DRIVERS: DriverPersona[] = [
-  { id: "maya", name: "Maya Chen", rating: 4.98, trips: 2410, car: "Toyota Camry", color: "Pearl", plate: "KEEP 80" },
-  { id: "luis", name: "Luis Ortega", rating: 4.96, trips: 1884, car: "Honda Accord", color: "Graphite", plate: "FLAT 20" },
-  { id: "amina", name: "Amina Hassan", rating: 4.99, trips: 3102, car: "Hyundai Ioniq", color: "White", plate: "NO SRGE" },
-  { id: "chris", name: "Chris Dalton", rating: 4.95, trips: 1260, car: "Subaru Outback", color: "Green", plate: "ROVE 80" },
-  { id: "priya", name: "Priya Shah", rating: 4.97, trips: 2044, car: "Kia EV6", color: "Silver", plate: "EIGHTY" },
+  { id: "maya", name: "Maya Chen", rating: 4.98, trips: 2410, car: "Toyota Camry", color: "Pearl", plate: "8PCA421" },
+  { id: "luis", name: "Luis Ortega", rating: 4.96, trips: 1884, car: "Honda Accord", color: "Graphite", plate: "7KRD118" },
+  { id: "amina", name: "Amina Hassan", rating: 4.99, trips: 3102, car: "Hyundai Ioniq", color: "White", plate: "9LMT330" },
+  { id: "chris", name: "Chris Dalton", rating: 4.95, trips: 1260, car: "Subaru Outback", color: "Green", plate: "6BHF774" },
+  { id: "priya", name: "Priya Shah", rating: 4.97, trips: 2044, car: "Kia EV6", color: "Silver", plate: "5NVE902" },
 ];
+
+export const UNASSIGNED: DriverPersona = {
+  id: "none",
+  name: "Not assigned",
+  rating: 0,
+  trips: 0,
+  car: "",
+  color: "",
+  plate: "",
+};
 
 export const RIDERS: RiderPersona[] = [
   { name: "Jordan Hale", rating: 4.92 },
@@ -407,6 +418,7 @@ export async function fetchRoute(a: LatLng, b: LatLng): Promise<RouteInfo> {
       miles: route.distance / 1609.344,
       minutes: route.duration / 60,
       geometry: geometry.length >= 2 ? geometry : lineGeometry(a, b),
+      estimated: false,
     };
   } catch {
     const miles = Math.max(0.2, milesBetween(a, b) * 1.28);
@@ -414,6 +426,7 @@ export async function fetchRoute(a: LatLng, b: LatLng): Promise<RouteInfo> {
       miles,
       minutes: (miles / 26) * 60,
       geometry: lineGeometry(a, b),
+      estimated: true,
     };
   } finally {
     clearTimeout(timer);

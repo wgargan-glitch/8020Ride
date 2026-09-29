@@ -15,9 +15,8 @@ import { useRove } from "@/lib/rove/store";
 import { CityMap } from "./CityMap";
 import { DriverPanel } from "./DriverPanel";
 import { RiderPanel } from "./RiderPanel";
-import { DriverSim, RiderSim } from "./Sims";
 
-const LEDGER_KEY = "8020ride-ledger-v1";
+const LEDGER_KEY = "8020ride-ledger-v2";
 
 export function RoveApp() {
   const role = useRove((s) => s.role);
@@ -41,10 +40,9 @@ export function RoveApp() {
 
   useEffect(() => {
     try {
-      const raw =
-        localStorage.getItem(LEDGER_KEY) ??
-        localStorage.getItem("rove-ledger-v2") ??
-        localStorage.getItem("rove-ledger-v1");
+      const current = localStorage.getItem(LEDGER_KEY);
+      const legacy = current ? null : localStorage.getItem("8020ride-ledger-v1");
+      const raw = current ?? legacy;
       if (raw) {
         const data = JSON.parse(raw) as {
           role?: unknown;
@@ -71,7 +69,7 @@ export function RoveApp() {
         if (data.dropoff === null) partial.dropoff = null;
         else if (isPin(data.dropoff)) partial.dropoff = data.dropoff;
         if (data.tier === "go" || data.tier === "plus" || data.tier === "van") partial.tier = data.tier;
-        if (Array.isArray(data.history)) {
+        if (current && Array.isArray(data.history)) {
           const history = data.history.filter(isReceipt);
           if (history.length) partial.history = history;
         }
@@ -79,7 +77,7 @@ export function RoveApp() {
         else if (isPin(data.home)) partial.home = data.home;
         if (data.work === null) partial.work = null;
         else if (isPin(data.work)) partial.work = data.work;
-        if (typeof data.cashed === "number" && Number.isFinite(data.cashed)) partial.cashed = data.cashed;
+        if (current && typeof data.cashed === "number" && Number.isFinite(data.cashed)) partial.cashed = data.cashed;
         if (
           partial.role ||
           partial.pickup ||
@@ -94,7 +92,7 @@ export function RoveApp() {
         }
       }
     } catch {
-      /* keep the seeded ledger */
+      /* keep an empty ledger */
     }
     return useRove.subscribe((state) => {
       const payload = {
@@ -168,9 +166,6 @@ export function RoveApp() {
         aiming={aiming}
         onMapClick={onMapClick}
       />
-      <RiderSim />
-      <DriverSim />
-
       <header className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2 border-b border-line bg-paper px-3 py-1 md:top-4 md:left-4 md:w-panel md:border">
         <div className="flex items-end gap-3 pl-1">
           <span className="font-display text-2xl leading-none tracking-tight text-ink md:text-3xl">8020Ride</span>
@@ -239,18 +234,23 @@ function About({ onClose }: { onClose: () => void }) {
       </button>
       <h2 className="font-display text-3xl">About 8020Ride</h2>
       <p className="text-muted">
-        8020Ride is a ride in Porterville and the valley. The price on the screen is the price you pay. No surge. Traffic does not change it.
+        8020Ride quotes a flat fare for Porterville and the valley. The price on the screen is the price that locks. No surge. Traffic does not change it.
       </p>
       <p className="text-muted">
-        The fare is split 80/20. The driver keeps 80 percent. 8020Ride keeps 20 percent, taken from the driver's share. It is never added on top of what the rider pays.
+        This release does not send a car, charge a card, or pay a driver. A request stays on this device until you cancel it. Two phones cannot see each other's trips.
       </p>
       <p className="text-muted">
-        A $20 fare pays the driver $16. 8020Ride collects $4. The same split holds on a short hop or a drive to Visalia.
+        When a ride is real, the fare is split 80/20. The driver keeps 80 percent. 8020Ride keeps 20 percent, taken from the driver's share, never added on top of the rider's price. A $20 fare would pay the driver $16.
       </p>
       <p className="text-muted">
-        The service area is Porterville, Visalia, Tulare, Lindsay, Exeter, and the foothills.
+        Quotes cover Porterville, Visalia, Tulare, Lindsay, Exeter, and the foothills. 8020Ride is not a licensed carrier.
       </p>
-      <p className="text-sm text-muted">8020ride.com</p>
+      <p className="text-sm">
+        <a className="underline" href="/privacy.html">Privacy</a>
+        <span className="text-muted"> · </span>
+        <a className="underline" href="/terms.html">Terms</a>
+        <span className="text-muted"> · 8020ride.com</span>
+      </p>
     </div>
   );
 }
