@@ -3,7 +3,7 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "Rove";
+const APP_NAME = "8020Ride";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -14,7 +14,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "Flat fares with no surge. Drivers keep 80% of every ride. Rove collects a flat 20% from the driver.",
+          "Flat fares with no surge. Drivers keep 80% of every ride. 8020Ride collects a flat 20% from the driver. 8020ride.com",
       },
       { name: "theme-color", content: "#0c6a64" },
     ],

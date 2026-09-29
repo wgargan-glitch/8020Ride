@@ -16,7 +16,7 @@ import { DriverPanel } from "./DriverPanel";
 import { RiderPanel } from "./RiderPanel";
 import { DriverSim, RiderSim } from "./Sims";
 
-const LEDGER_KEY = "rove-ledger-v2";
+const LEDGER_KEY = "8020ride-ledger-v1";
 
 export function RoveApp() {
   const role = useRove((s) => s.role);
@@ -39,7 +39,10 @@ export function RoveApp() {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(LEDGER_KEY) ?? localStorage.getItem("rove-ledger-v1");
+      const raw =
+        localStorage.getItem(LEDGER_KEY) ??
+        localStorage.getItem("rove-ledger-v2") ??
+        localStorage.getItem("rove-ledger-v1");
       if (raw) {
         const data = JSON.parse(raw) as {
           role?: unknown;
@@ -154,7 +157,7 @@ export function RoveApp() {
 
   return (
     <main className="relative h-dvh overflow-hidden bg-linen text-ink">
-      <h1 className="sr-only">Rove</h1>
+      <h1 className="sr-only">8020Ride</h1>
       <CityMap
         pickup={mapPickup ?? HOME_PIN}
         dropoff={mapDropoff}
@@ -168,10 +171,10 @@ export function RoveApp() {
 
       <header className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2 border-b border-line bg-paper px-3 py-1 md:top-4 md:left-4 md:w-panel md:border">
         <div className="flex items-end gap-2 pl-1">
-          <span className="font-display text-4xl leading-none text-ink">Rove</span>
+          <span className="font-display text-2xl leading-none tracking-tight text-ink md:text-3xl">8020Ride</span>
           <span className="mb-1 border border-jade bg-mint px-1.5 font-display text-lg leading-none text-jade-deep">80%</span>
         </div>
-        <div className="flex" role="radiogroup" aria-label="Use Rove as">
+        <div className="flex" role="radiogroup" aria-label="Use 8020Ride as">
           {(
             [
               ["rider", "Ride"],

@@ -61,7 +61,7 @@ export function DriverPanel() {
         </button>
         <h2 className="font-display text-3xl">Your 80% is fixed</h2>
         <p className="text-muted">
-          Riders see one price. You keep 80% of it. Rove collects a flat 20% from you on the completed ride — no surge cut, no booking fee, no adjustment later.
+          Riders see one price. You keep 80% of it. 8020Ride collects a flat 20% from you on the completed ride — no surge cut, no booking fee, no adjustment later.
         </p>
         <RateList />
         <SplitBar />
@@ -98,7 +98,7 @@ export function DriverPanel() {
           <p className="text-sm font-medium text-jade-deep">You keep</p>
           <p className="font-display text-5xl tabular-nums">{money(job.driver)}</p>
           <p className="text-sm text-muted">
-            of {money(job.total)} locked fare. Rove collects {money(job.platform)} — a flat 20%.
+            of {money(job.total)} locked fare. 8020Ride collects {money(job.platform)} — a flat 20%.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -173,7 +173,7 @@ export function DriverPanel() {
         <p className="text-sm font-medium text-jade-deep">Paid to you</p>
         <h2 className="font-display text-5xl tabular-nums">{money(job.driver)}</h2>
         <p className="text-sm text-muted">
-          {job.pickup.name} to {job.dropoff.name}. Rove collected {money(job.platform)} from this fare. Nothing else.
+          {job.pickup.name} to {job.dropoff.name}. 8020Ride collected {money(job.platform)} from this fare. Nothing else.
         </p>
         <SplitBar />
         <PrimaryButton onClick={finishDriver}>Find another ride</PrimaryButton>
@@ -188,7 +188,7 @@ export function DriverPanel() {
     <div className="screen-in space-y-4">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <h2 className="font-display text-3xl">{online ? "You\u2019re online" : "Drive with Rove"}</h2>
+          <h2 className="font-display text-3xl">{online ? "You\u2019re online" : "Drive with 8020Ride"}</h2>
           <p className="text-sm text-muted">You keep 80% of every fare. Always.</p>
         </div>
         <div className="flex">
@@ -212,7 +212,7 @@ export function DriverPanel() {
       ) : (
         <div className="rounded-sm border border-jade bg-mint px-4 py-3">
           <p className="font-medium text-ink">A $20 fare pays you $16.</p>
-          <p className="text-sm text-ink">Rove collects $4 from you. Same 20% on a $6 hop or a valley run.</p>
+          <p className="text-sm text-ink">8020Ride collects $4 from you. Same 20% on a $6 hop or a valley run.</p>
         </div>
       )}
 
@@ -239,7 +239,7 @@ export function DriverPanel() {
         {balance.cashed > 0 ? (
           <p className="mt-2 text-sm text-muted">Paid out {money(balance.cashed)} on this device.</p>
         ) : (
-          <p className="mt-2 text-sm text-muted">Rove already took its 20%. This is the rest.</p>
+          <p className="mt-2 text-sm text-muted">8020Ride already took its 20%. This is the rest.</p>
         )}
       </div>
 

@@ -316,7 +316,7 @@ export function RiderPanel() {
         <RateList />
         <SplitBar />
         <p className="text-sm text-muted">
-          Rove's 20% is collected from the driver, not added on top of your price. Cancel any time before the trip starts. No fee.
+          8020Ride's 20% is collected from the driver, not added on top of your price. Cancel any time before the trip starts. No fee.
         </p>
       </div>
     );
@@ -389,7 +389,7 @@ export function RiderPanel() {
         {near ? (
           <p className="text-sm text-muted">That stop is the same as pickup. Choose another place.</p>
         ) : outside ? (
-          <p className="text-sm text-muted">Rove drives Porterville and the valley — Visalia, Tulare, Lindsay, Exeter, and the foothills. This pin is outside that area.</p>
+          <p className="text-sm text-muted">8020Ride drives Porterville and the valley — Visalia, Tulare, Lindsay, Exeter, and the foothills. This pin is outside that area.</p>
         ) : routing || !price || !route ? (
           <p className="text-sm text-muted">Locking a flat fare…</p>
         ) : (
@@ -463,7 +463,7 @@ export function RiderPanel() {
       <div className="rounded-sm bg-mint px-4 py-3 text-jade-deep">
         <p className="font-medium">Drivers keep 80%</p>
         <p className="text-sm">
-          You pay the price on the screen. Rove collects a flat 20% from the driver — never a surcharge on you.
+          You pay the price on the screen. 8020Ride collects a flat 20% from the driver — never a surcharge on you.
         </p>
       </div>
       <Endpoint label="Pickup" name={pickup.name} detail={pickup.area} onClick={() => openSearch("pickup")} />
@@ -616,7 +616,7 @@ export function RateList() {
         );
       })}
       <p className="text-sm text-ink">
-        A 5-mile Go is {money(sample.total)}. The driver keeps {money(sample.driver)}. Rove collects {money(sample.platform)}.
+        A 5-mile Go is {money(sample.total)}. The driver keeps {money(sample.driver)}. 8020Ride collects {money(sample.platform)}.
       </p>
     </div>
   );
@@ -652,8 +652,8 @@ export function TripList({ onBook }: { onBook?: (ride: Receipt) => void }) {
           </div>
           <p className="mt-1 text-sm text-muted">
             {ride.role === "driver"
-              ? `You kept 80%. Rove collected ${money(ride.platform)}.`
-              : `Driver kept ${money(ride.driver)}. Rove collected ${money(ride.platform)} from them.`}
+              ? `You kept 80%. 8020Ride collected ${money(ride.platform)}.`
+              : `Driver kept ${money(ride.driver)}. 8020Ride collected ${money(ride.platform)} from them.`}
           </p>
           {ride.stars == null && ride.role === "rider" ? (
             <Stars value={0} onChange={(n) => rateRide(ride.id, n)} />

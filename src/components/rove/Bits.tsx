@@ -67,7 +67,7 @@ export function SplitBar() {
       </div>
       <div className="mt-2 flex justify-between text-sm">
         <span className="font-medium text-jade-deep">Driver keeps 80%</span>
-        <span className="text-muted">Rove 20%</span>
+        <span className="text-muted">8020Ride 20%</span>
       </div>
     </div>
   );
@@ -137,7 +137,7 @@ export function FareLines({ ride, emphasis }: { ride: Receipt; emphasis: "paid" 
         </dd>
       </div>
       <div className="flex justify-between gap-3">
-        <dt className="text-muted">Rove collects 20% from the driver</dt>
+        <dt className="text-muted">8020Ride collects 20% from the driver</dt>
         <dd className="tabular-nums text-gold-deep">{money(ride.platform)}</dd>
       </div>
     </dl>
