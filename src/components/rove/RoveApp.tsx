@@ -176,6 +176,9 @@ export function RoveApp() {
           >
             About
           </button>
+          <a href="/books" className="press mb-0.5 text-sm font-medium text-muted">
+            Books
+          </a>
         </div>
         <div className="flex" role="radiogroup" aria-label="Use 8020Ride as">
           {(
@@ -246,6 +249,8 @@ function About({ onClose }: { onClose: () => void }) {
         Quotes cover Porterville, Visalia, Tulare, Lindsay, Exeter, and the foothills. 8020Ride is not a licensed carrier.
       </p>
       <p className="text-sm">
+        <a className="underline" href="/books">Books</a>
+        <span className="text-muted"> · </span>
         <a className="underline" href="/privacy.html">Privacy</a>
         <span className="text-muted"> · </span>
         <a className="underline" href="/terms.html">Terms</a>
