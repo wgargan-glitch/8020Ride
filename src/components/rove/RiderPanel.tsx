@@ -21,7 +21,7 @@ import {
   type Receipt,
 } from "@/lib/rove/model";
 import { useRove } from "@/lib/rove/store";
-import { FareLines, IconButton, PrimaryButton, SoftButton, SplitBar, Stars, TierMark } from "./Bits";
+import { FareLines, IconButton, PrimaryButton, SoftButton, Stars, TierMark } from "./Bits";
 
 type Screen = "home" | "search" | "quote" | "rates" | "trips";
 
@@ -218,15 +218,14 @@ export function RiderPanel() {
           <div className="space-y-4">
             <h2 className="font-display text-3xl text-ink">Finding your driver</h2>
             <p className="text-muted">
-              The fare is locked. A driver nearby can take it, or you can drive it and keep 80%.
+              The fare is locked. A driver nearby can take it, or you can drive it yourself.
             </p>
             <div className="rounded-sm bg-linen px-4 py-4">
               <p className="text-sm text-muted">{TIERS[trip.tier].name}</p>
               <p className="font-display text-4xl tabular-nums">{money(trip.total)}</p>
-              <p className="mt-1 text-sm text-jade-deep">Driver keeps {money(trip.driver)}</p>
             </div>
             {trip.linked ? (
-              <PrimaryButton onClick={driveThisRide}>Drive it · keep {money(trip.driver)}</PrimaryButton>
+              <PrimaryButton onClick={driveThisRide}>Drive it</PrimaryButton>
             ) : null}
             <SoftButton onClick={cancelRider}>Cancel · no fee</SoftButton>
           </div>
@@ -237,7 +236,7 @@ export function RiderPanel() {
             <p className="text-sm font-medium text-jade-deep">You took this ride</p>
             <h2 className="font-display text-3xl">Finish it in Drive</h2>
             <p className="text-muted">
-              Head to {trip.pickup.name}, then to {trip.dropoff.name}. You keep {money(trip.driver)} of the {money(trip.total)} fare.
+              Head to {trip.pickup.name}, then to {trip.dropoff.name}. The fare is {money(trip.total)}.
             </p>
             <PrimaryButton onClick={() => setRole("driver")}>Open Drive</PrimaryButton>
           </div>
@@ -260,7 +259,7 @@ export function RiderPanel() {
           <div className="space-y-4">
             <p className="text-sm font-medium text-jade-deep">You're on the trip</p>
             <h2 className="font-display text-3xl">To {trip.dropoff.name}</h2>
-            <p className="text-muted">Complete it from Drive. The fare stays {money(trip.total)}, and you keep {money(trip.driver)}.</p>
+            <p className="text-muted">Complete it from Drive. The fare stays {money(trip.total)}.</p>
             <PrimaryButton onClick={() => setRole("driver")}>Open Drive</PrimaryButton>
           </div>
         ) : null}
@@ -274,7 +273,6 @@ export function RiderPanel() {
             </p>
             <div className="rounded-sm bg-mint px-4 py-4">
               <p className="font-display text-4xl tabular-nums text-jade-deep">{money(trip.total)}</p>
-              <p className="mt-1 text-sm text-jade-deep">{trip.driverPersona.name} keeps {money(trip.driver)}</p>
             </div>
             <SoftButton onClick={completeRider}>End ride</SoftButton>
           </div>
@@ -290,7 +288,6 @@ export function RiderPanel() {
               {trip.pickup.name} to {trip.dropoff.name}
               {trip.selfDrive ? `. You also paid ${money(trip.total)} as the rider.` : " · Visa ··· 4242"}
             </p>
-            <SplitBar />
             {fresh ? <FareLines ride={fresh} emphasis="paid" /> : null}
             <div>
               <p className="mb-1 text-sm font-medium">
@@ -314,10 +311,7 @@ export function RiderPanel() {
           Price is a base plus miles. It locks when you request. Demand never changes it, and minutes stuck in traffic are free.
         </p>
         <RateList />
-        <SplitBar />
-        <p className="text-sm text-muted">
-          8020Ride's 20% is collected from the driver, not added on top of your price. Cancel any time before the trip starts. No fee.
-        </p>
+        <p className="text-sm text-muted">Cancel any time before the trip starts. No fee.</p>
       </div>
     );
   }
@@ -415,7 +409,7 @@ export function RiderPanel() {
                     <span>
                       <span className="block font-medium">{TIERS[id].name}</span>
                       <span className="block text-sm text-muted">
-                        {TIERS[id].blurb} · driver keeps {money(option.driver)}
+                        {TIERS[id].blurb} · {TIERS[id].seats} seats
                       </span>
                     </span>
                     <span className="font-display text-2xl tabular-nums">{money(option.total)}</span>
@@ -459,12 +453,6 @@ export function RiderPanel() {
             <Clock className="size-5" />
           </IconButton>
         </div>
-      </div>
-      <div className="rounded-sm bg-mint px-4 py-3 text-jade-deep">
-        <p className="font-medium">Drivers keep 80%</p>
-        <p className="text-sm">
-          You pay the price on the screen. 8020Ride collects a flat 20% from the driver — never a surcharge on you.
-        </p>
       </div>
       <Endpoint label="Pickup" name={pickup.name} detail={pickup.area} onClick={() => openSearch("pickup")} />
       <div className="grid grid-cols-2 gap-2">
@@ -598,7 +586,6 @@ function DriverCard({
 }
 
 export function RateList() {
-  const sample = quoteFare(5, TIERS.go);
   return (
     <div className="space-y-3">
       {TIER_ORDER.map((id) => {
@@ -615,9 +602,6 @@ export function RateList() {
           </div>
         );
       })}
-      <p className="text-sm text-ink">
-        A 5-mile Go is {money(sample.total)}. The driver keeps {money(sample.driver)}. 8020Ride collects {money(sample.platform)}.
-      </p>
     </div>
   );
 }
@@ -650,11 +634,6 @@ export function TripList({ onBook }: { onBook?: (ride: Receipt) => void }) {
               <TierMark tier={ride.tier} />
             </div>
           </div>
-          <p className="mt-1 text-sm text-muted">
-            {ride.role === "driver"
-              ? `You kept 80%. 8020Ride collected ${money(ride.platform)}.`
-              : `Driver kept ${money(ride.driver)}. 8020Ride collected ${money(ride.platform)} from them.`}
-          </p>
           {ride.stars == null && ride.role === "rider" ? (
             <Stars value={0} onChange={(n) => rateRide(ride.id, n)} />
           ) : ride.stars != null ? (

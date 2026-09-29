@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { ChevronLeft } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import {
   HOME_PIN,
@@ -36,6 +37,7 @@ export function RoveApp() {
   const setPlace = useRove((s) => s.setPlace);
   const saving = useRove((s) => s.saving);
   const labelSeq = useRef(0);
+  const [about, setAbout] = useState(false);
 
   useEffect(() => {
     try {
@@ -170,9 +172,15 @@ export function RoveApp() {
       <DriverSim />
 
       <header className="absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-2 border-b border-line bg-paper px-3 py-1 md:top-4 md:left-4 md:w-panel md:border">
-        <div className="flex items-end gap-2 pl-1">
+        <div className="flex items-end gap-3 pl-1">
           <span className="font-display text-2xl leading-none tracking-tight text-ink md:text-3xl">8020Ride</span>
-          <span className="mb-1 border border-jade bg-mint px-1.5 font-display text-lg leading-none text-jade-deep">80%</span>
+          <button
+            type="button"
+            onClick={() => setAbout(true)}
+            className="press mb-0.5 text-sm font-medium text-muted"
+          >
+            About
+          </button>
         </div>
         <div className="flex" role="radiogroup" aria-label="Use 8020Ride as">
           {(
@@ -211,9 +219,38 @@ export function RoveApp() {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 md:top-20 md:bottom-4 md:left-4 md:w-panel">
         <section className="pointer-events-auto max-h-sheet min-w-0 overflow-y-auto overscroll-contain border-t border-line bg-paper px-4 pt-3 pb-6 md:h-full md:max-h-none md:border">
           <div className="mx-auto mb-3 h-1 w-8 bg-ink md:hidden" />
-          {role === "rider" ? <RiderPanel /> : <DriverPanel />}
+          {about ? <About onClose={() => setAbout(false)} /> : role === "rider" ? <RiderPanel /> : <DriverPanel />}
         </section>
       </div>
     </main>
+  );
+}
+
+function About({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="screen-in space-y-4">
+      <button
+        type="button"
+        onClick={onClose}
+        className="press -ml-2 inline-flex h-11 items-center gap-1 pl-2 text-sm font-medium"
+      >
+        <ChevronLeft className="size-5" />
+        Back
+      </button>
+      <h2 className="font-display text-3xl">About 8020Ride</h2>
+      <p className="text-muted">
+        8020Ride is a ride in Porterville and the valley. The price on the screen is the price you pay. No surge. Traffic does not change it.
+      </p>
+      <p className="text-muted">
+        The fare is split 80/20. The driver keeps 80 percent. 8020Ride keeps 20 percent, taken from the driver's share. It is never added on top of what the rider pays.
+      </p>
+      <p className="text-muted">
+        A $20 fare pays the driver $16. 8020Ride collects $4. The same split holds on a short hop or a drive to Visalia.
+      </p>
+      <p className="text-muted">
+        The service area is Porterville, Visalia, Tulare, Lindsay, Exeter, and the foothills.
+      </p>
+      <p className="text-sm text-muted">8020ride.com</p>
+    </div>
   );
 }

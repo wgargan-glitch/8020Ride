@@ -10,7 +10,7 @@ import {
   walletBalance,
 } from "@/lib/rove/model";
 import { useRove } from "@/lib/rove/store";
-import { IconButton, PrimaryButton, SoftButton, SplitBar } from "./Bits";
+import { IconButton, PrimaryButton, SoftButton } from "./Bits";
 import { RateList, TripList } from "./RiderPanel";
 
 type Screen = "dash" | "rates" | "trips";
@@ -59,12 +59,11 @@ export function DriverPanel() {
           <ChevronLeft className="size-5" />
           Back
         </button>
-        <h2 className="font-display text-3xl">Your 80% is fixed</h2>
+        <h2 className="font-display text-3xl">Fares</h2>
         <p className="text-muted">
-          Riders see one price. You keep 80% of it. 8020Ride collects a flat 20% from you on the completed ride — no surge cut, no booking fee, no adjustment later.
+          Price is a base plus miles. It locks when the rider requests. Demand does not change it, and minutes in traffic are free.
         </p>
         <RateList />
-        <SplitBar />
       </div>
     );
   }
@@ -95,10 +94,9 @@ export function DriverPanel() {
           {job.linkedTripId ? null : <OfferClock expiresAt={job.expiresAt} />}
         </div>
         <div>
-          <p className="text-sm font-medium text-jade-deep">You keep</p>
           <p className="font-display text-5xl tabular-nums">{money(job.driver)}</p>
           <p className="text-sm text-muted">
-            of {money(job.total)} locked fare. 8020Ride collects {money(job.platform)} — a flat 20%.
+            {money(job.total)} fare · {formatMiles(job.miles)} · about {formatMinutes(job.minutes)}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -116,9 +114,9 @@ export function DriverPanel() {
           <span className="font-medium">{job.dropoff.name}</span>
         </p>
         <p className="text-sm text-muted">
-          {formatMiles(job.miles)} trip · about {formatMinutes(job.minutes)}. Unpaid to pickup: {formatMiles(job.approach.miles)} · {formatMinutes(job.approach.minutes)}. The fare starts when the rider is in the car.
+          Unpaid to pickup: {formatMiles(job.approach.miles)} · {formatMinutes(job.approach.minutes)}. The fare starts when the rider is in the car.
         </p>
-        <PrimaryButton onClick={acceptOffer}>Accept · keep {money(job.driver)}</PrimaryButton>
+        <PrimaryButton onClick={acceptOffer}>Accept · {money(job.driver)}</PrimaryButton>
         <SoftButton onClick={passOffer}>Pass</SoftButton>
         <button type="button" onClick={goOffline} className="press h-11 w-full text-sm font-medium text-muted">
           Go offline
@@ -132,7 +130,7 @@ export function DriverPanel() {
       <TripStage
         kicker="Heading to pickup"
         title={job.pickup.name}
-        body={`${job.rider.name} is waiting. You still keep ${money(job.driver)} of the ${money(job.total)} fare.`}
+        body={`${job.rider.name} is waiting. The fare is ${money(job.total)}.`}
         action="I've arrived"
         onAction={arrivePickup}
         secondary="Cancel"
@@ -160,8 +158,8 @@ export function DriverPanel() {
       <TripStage
         kicker="On trip"
         title={job.dropoff.name}
-        body="Traffic does not change what you keep. The rider already agreed to the flat fare."
-        action={`Complete · keep ${money(job.driver)}`}
+        body="Traffic does not change the fare. The rider already agreed to it."
+        action={`Complete · ${money(job.driver)}`}
         onAction={completeDriver}
       />
     );
@@ -173,9 +171,8 @@ export function DriverPanel() {
         <p className="text-sm font-medium text-jade-deep">Paid to you</p>
         <h2 className="font-display text-5xl tabular-nums">{money(job.driver)}</h2>
         <p className="text-sm text-muted">
-          {job.pickup.name} to {job.dropoff.name}. 8020Ride collected {money(job.platform)} from this fare. Nothing else.
+          {job.pickup.name} to {job.dropoff.name}.
         </p>
-        <SplitBar />
         <PrimaryButton onClick={finishDriver}>Find another ride</PrimaryButton>
         <SoftButton onClick={goOffline}>Go offline</SoftButton>
       </div>
@@ -189,10 +186,9 @@ export function DriverPanel() {
       <div className="flex items-start justify-between gap-2">
         <div>
           <h2 className="font-display text-3xl">{online ? "You\u2019re online" : "Drive with 8020Ride"}</h2>
-          <p className="text-sm text-muted">You keep 80% of every fare. Always.</p>
         </div>
         <div className="flex">
-          <IconButton label="How the 80% works" onClick={() => setScreen("rates")}>
+          <IconButton label="Fares" onClick={() => setScreen("rates")}>
             <BadgePercent className="size-5" />
           </IconButton>
           <IconButton label="Payouts" onClick={() => setScreen("trips")}>
@@ -207,20 +203,15 @@ export function DriverPanel() {
             <span className="rove-ping absolute inline-flex size-3 rounded-sm bg-jade opacity-70" />
             <span className="relative size-2.5 rounded-sm bg-jade" />
           </span>
-          <p className="text-sm font-medium">Looking for a rider. Your cut never changes with demand.</p>
+          <p className="text-sm font-medium">Looking for a rider.</p>
         </div>
-      ) : (
-        <div className="rounded-sm border border-jade bg-mint px-4 py-3">
-          <p className="font-medium text-ink">A $20 fare pays you $16.</p>
-          <p className="text-sm text-ink">8020Ride collects $4 from you. Same 20% on a $6 hop or a valley run.</p>
-        </div>
-      )}
+      ) : null}
 
       {openRide ? (
         <div className="rounded-sm bg-mint px-4 py-3 text-jade-deep">
           <p className="font-medium">Your request is live</p>
           <p className="text-sm">
-            {openRide.pickup.name} to {openRide.dropoff.name}. Go online to take it and keep {money(openRide.driver)}.
+            {openRide.pickup.name} to {openRide.dropoff.name}. Go online to take it.
           </p>
         </div>
       ) : null}
@@ -238,9 +229,7 @@ export function DriverPanel() {
         </button>
         {balance.cashed > 0 ? (
           <p className="mt-2 text-sm text-muted">Paid out {money(balance.cashed)} on this device.</p>
-        ) : (
-          <p className="mt-2 text-sm text-muted">8020Ride already took its 20%. This is the rest.</p>
-        )}
+        ) : null}
       </div>
 
       <div className="grid grid-cols-2 gap-2">

@@ -58,21 +58,6 @@ export function IconButton({
   );
 }
 
-export function SplitBar() {
-  return (
-    <div>
-      <div className="flex h-2 gap-1" aria-hidden="true">
-        <div className="h-full w-4/5 bg-jade" />
-        <div className="h-full w-1/5 bg-ink" />
-      </div>
-      <div className="mt-2 flex justify-between text-sm">
-        <span className="font-medium text-jade-deep">Driver keeps 80%</span>
-        <span className="text-muted">8020Ride 20%</span>
-      </div>
-    </div>
-  );
-}
-
 export function Stars({
   value,
   onChange,
@@ -131,13 +116,13 @@ export function FareLines({ ride, emphasis }: { ride: Receipt; emphasis: "paid" 
         </dd>
       </div>
       <div className="flex justify-between gap-3">
-        <dt className="text-muted">Driver keeps 80%</dt>
+        <dt className="text-muted">Driver</dt>
         <dd className={cn("tabular-nums text-jade-deep", emphasis === "kept" && "font-medium")}>
           {money(ride.driver)}
         </dd>
       </div>
       <div className="flex justify-between gap-3">
-        <dt className="text-muted">8020Ride collects 20% from the driver</dt>
+        <dt className="text-muted">8020Ride</dt>
         <dd className="tabular-nums text-gold-deep">{money(ride.platform)}</dd>
       </div>
     </dl>
