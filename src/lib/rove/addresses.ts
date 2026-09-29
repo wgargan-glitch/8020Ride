@@ -2,6 +2,16 @@ import { milesBetween, type Pin } from "@/lib/rove/model";
 
 const US = { south: 24.4, north: 49.5, west: -125.0, east: -66.0 };
 
+export const LA = { lat: 34.05223, lng: -118.24368 };
+
+export const DEFAULT_PIN: Pin = {
+  id: "la-downtown",
+  name: "Downtown Los Angeles",
+  area: "Los Angeles, California",
+  lat: LA.lat,
+  lng: LA.lng,
+};
+
 export function inServiceArea(lat: number, lng: number): boolean {
   return lat >= US.south && lat <= US.north && lng >= US.west && lng <= US.east;
 }
@@ -151,7 +161,7 @@ export async function geocodePlaces(
 ): Promise<Pin[]> {
   const q = query.trim();
   if (q.length < 3) return [];
-  const bias = near ?? { lat: 36.0652, lng: -119.0168 };
+  const bias = near ?? LA;
   const photon = await photonSearch(q, bias, signal);
   if (photon.length >= 4) return photon;
   try {
@@ -179,10 +189,6 @@ export async function reverseLabel(lat: number, lng: number, signal?: AbortSigna
   const feature = data.features?.[0];
   const coords = feature?.geometry?.coordinates;
   if (!coords || !feature?.properties) return null;
-  const [rlng, rlat] = coords;
-  if (milesBetween({ lat, lng }, { lat: rlat, lng: rlng }) > 0.6) {
-    return pinFromProps(lat, lng, feature.properties, "pin");
-  }
   const pin = pinFromProps(lat, lng, feature.properties, "pin");
   return pin ? { ...pin, lat, lng } : null;
 }
